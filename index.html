@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 
+        以后的开发：
+                前后端分离的开发
+
+        以后服务器的代码需要前端写吗？一般是不需要的，后端开发人员来写
+
+     -->
+    <style>
+        .chatBox {
+    
+                width: 400px;
+                border: 1px solid gainsboro;
+                margin: 50px auto;
+                background: url('images/bg.png') ; no-repeat ;
+                background-size:100% 100%;
+            }
+    
+            .container {
+                width: 100%;
+                height: 550px;
+                /* background-color: #fff; */
+                padding: 0;
+                list-style: none;
+                /* 超出的时候就出现一个滚动条 */
+                overflow:auto;
+                
+            }
+    
+            .sendBox {
+                width: 100%;
+                /* 内容居中 */
+                text-align: center;
+                padding: 10px;
+            }
+    
+            .robot {
+                margin-top: 15px;
+                text-align: left;
+            }
+    
+            .chat-icon {
+                width: 60px;
+                height: 80px;
+                display: inline-block;
+                border-radius: 10px;
+                background: url('images/timg.jpg') 0% 0% / 100% 100% no-repeat;
+                margin-left: 10px;
+            }
+    
+            .robot .text {
+                border-radius: 8px;
+                background-color: lightgray;
+                margin-left: 10px;
+                /* 最大宽度 */
+                max-width: 210px;
+                line-height: 20px;
+                word-break: break-all;
+                word-wrap: break-word;
+                display: inline-block;
+                padding: 5px 0px 5px 5px;
+            }
+    
+    
+            .user {
+                margin-top: 15px;
+                text-align: right;
+            }
+    
+            .user p {
+    
+                border-radius: 8px;
+                margin-right: 10px;
+                max-width: 210px;
+                line-height: 20px;
+                word-break: break-all;
+                word-wrap: break-word;
+                display: inline-block;
+                padding: 5px;
+                background-color: yellowgreen;
+            }
+
+            h2 {
+                color:blueviolet;
+                margin:0 auto;
+                text-align: center;
+            }
+
+             input::-webkit-input-placeholder {
+                color:rgba(105, 105, 105, 0.4);
+            }
+        </style>
+</head>
+
+<body>
+
+
+    <div class="chatBox">
+        <h2>明星私密聊天室</h2>
+        <!-- 聊天记录区域 -->
+        <ul class="container">
+
+            <li class="robot">
+                <span class="chat-icon"></span>
+                <p class="text">男神你好,我是赵丽颖,快来和我聊天吧!</p>
+            </li>
+
+            <!-- <li class="user">
+                    <p>你好！</p>
+            </li> -->
+        </ul>
+
+        <!-- 输入文字区域 -->
+        <div class="sendBox">
+            <input type="text" id="msg" placeholder="请输入你想说的话" value="">
+            <input type="button" value="发送" id="send">
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+
+<script>
+    var btn = document.getElementById('send');
+    var msg = document.getElementById('msg');
+    var container = document.querySelector('.container');
+
+    msg.onkeydown = function(e){
+        e = e||window.event;
+        if(e.keyCode == 13){
+            btn.onclick();
+        }
+            // console.log(e.keyCode);
+    }
+
+    btn.onclick = function(){
+        if(msg.varlue == "") return;
+
+        var li = '<li class="user">'+
+                    '<p>'+ msg.value +'</p>'+
+                    '</li>';
+
+        container.innerHTML += li;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('post','http://www.tuling123.com/openapi/api');
+
+        xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+
+        xhr.send("userid=43242&key=145405df57ed47a2810ccb300054fd47&info=" + msg.value);
+        
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState==4 && xhr.status==200){
+                
+
+                var obj = JSON.parse(xhr.responseText);
+
+                var rebot = '<li class="robot">'+
+                            '<span class="chat-icon"></span>'+
+                            '<p class="text">'+obj.text+'</p></li>';
+
+                console.log(rebot);
+                container.innerHTML += rebot;
+
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+        msg.value = '';
+    }
+
+
+</script>
